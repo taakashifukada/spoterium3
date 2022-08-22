@@ -1,6 +1,9 @@
 <?php
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use App\Http\Controllers\BookmarkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,13 +15,31 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+/*
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
+*/
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+Route::group(['middleware' => ['auth']], function(){
+    //URL追加
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->middleware(['auth'])->name('dashboard');
+    
+    Route::get('/',[BookmarkController::class, 'topPage']);
+    Route::get('/add/url', [BookmarkController::class, 'addUrl']);
+    Route::post('/add/url', [BookmarkController::class, 'storeUrl']);
+    
+    Route::post('/mokuji', [BookmarkController::class, 'storeContent']);
+    
+    Route::get('/add/details', [BookmarkController::class, 'addDetails']);
+    Route::post('/add/details', [BookmarkController::class, 'storeBookmark']);
+});
 
 require __DIR__.'/auth.php';
