@@ -5,6 +5,9 @@
         <title>Spoterium</title>
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
     </head>
     <body>
         <form method="POST" action="{{ route('logout') }}" required>
@@ -44,6 +47,8 @@
                     <input type='submit' value="追加"/>
                 </form>
             </div>
+            
+            
         </div>
         
         <script>
@@ -65,5 +70,6 @@
                 file_data.readAsDataURL(e.files[0]);
             }
         </script>
+    
     </body>
 </html>
