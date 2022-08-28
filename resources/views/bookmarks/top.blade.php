@@ -38,7 +38,13 @@
                         @endforeach
                     </div>
                 </div>
-                <p class="mokuji_idx">▼目次</p>
+            </div>
+            <div class="mokuji_idx">
+                <p>▼目次</p>
+                @foreach($bookmark->contents as $content)
+                    <p>{{ $content->contents_index }}</p>
+                    <a href="{{ $content->contents_url }}">{{ $content->contents_title }}</a>
+                @endforeach
             </div>
             
         </main>

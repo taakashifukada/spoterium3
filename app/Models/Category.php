@@ -10,7 +10,9 @@ class Category extends Model
     use HasFactory;
     
     protected $fillable = [
-        'name'
+        'name',
+        'contents_url',
+        'contents_title'
     ];
     
     public function bookmarks()   

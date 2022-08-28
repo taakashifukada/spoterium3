@@ -13,16 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('bookmarks', function (Blueprint $table) {
+        Schema::create('contents', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('url',200);
-            $table->string('title',50);
-            $table->string('img_path',200)->nullable();
-            $table->integer('user_id')->unsigned();
-            $table->integer('category_id')->unsigned()->nullable();
-            $table->string('comment',200);
-            $table->integer('contents_flag')->default(0);
+            $table->string("contents_title");
+            $table->string("contents_url");
+            $table->integer('contents_index');
+            $table->integer("bookmark_id")->unsigned();
         });
     }
 
@@ -33,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('bookmarks');
+        Schema::dropIfExists('contents');
     }
 };

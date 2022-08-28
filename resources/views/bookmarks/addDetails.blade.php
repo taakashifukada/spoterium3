@@ -37,18 +37,21 @@
                 <p class='title'>コメント</p>
                 <input type="text" name="bookmark[comment]" placeholder="Comment"/>
                 <input type='submit' value="作成"/>
+                
+                <div id="mokuji">
+                    <p class='title'>目次</p>
+                    <div v-for="(text,index) in contents_url">
+                        <!--入力ボックス-->
+                        <input type="text" placeholder="URL" v-model="contents_url[index]" name="contents_url[]" required/>
+                        <input type="text" placeholder="Title" v-model="contents_title[index]" name="contents_title[]" required/>
+                        <!--削除ボタン-->
+                        <button type="button" @click="removeInput(index)">削除</button>
+                    </div>
+                    
+                    <!-- 入力ボックスを追加するボタン ② -->
+                    <button type="button" @click="addInput">追加する</button>
+                </div>
             </form>
-            <div class="mokuji_form">
-                <form action="/mokuji" method="POST">
-                    @csrf
-                    <p class='title'>目次を追加</p>
-                    <input type="text" name="mokuji_url" placeholder="URL"/>
-                    <input type="text" name="mokuji_name" placeholder="目次名"/>
-                    <input type='submit' value="追加"/>
-                </form>
-            </div>
-            
-            
         </div>
         
         <script>
@@ -69,6 +72,37 @@
                 //pc上の画像ファイルの場所をローカルURLとして読み込む
                 file_data.readAsDataURL(e.files[0]);
             }
+        </script>
+        
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+        
+        <script>
+            new Vue({
+                el: '#mokuji',
+                data: {
+                    contents_url: [], // 複数入力のデータ（配列）
+                    contents_title: [],
+                },
+                methods: {
+        
+                    // ボタンをクリックしたときのイベント ①〜③
+                    removeInput(index) {
+
+                        this.contents_url.splice(index, 1); // 👈 該当するデータを削除(index:削除開始の番号、1:削除する個数)
+                        this.contents_titile.splice(index, 1);
+            
+                    },
+                    addInput() {
+
+                        this.contents_url.push(''); // 配列に１つ空データを追加する
+                        this.contents_title.push('');
+            
+                    },
+                    
+                }
+            });
+            
         </script>
     
     </body>
