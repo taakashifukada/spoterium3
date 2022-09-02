@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Bookmark;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\Content;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -14,15 +15,15 @@ class BookmarkController extends Controller
 {
     //Bookmarkモデルのインスタンスを$bookmarkに格納
     //
-    public function postWelcome(Request $request, Bookmark $bookmark){
-        dd($request);
-        return redirect('/login');
+    public function welcome(Bookmark $bookmark)
+    {
+        return view('welcome')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
     }
     
     public function topPage(Bookmark $bookmark)
     {
         //dd($bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)->first());
-        return view('bookmarks.top')->with(['bookmark'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)->first()]);
+        return view('bookmarks.top')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
     }
     
     public function addUrl()
@@ -91,6 +92,11 @@ class BookmarkController extends Controller
         $full_path = Storage::disk('s3')->url($path);
         $input['img_path']=$full_path;
         
+        //目次の有無
+        if($request->has('contents_url')){
+            $input['contents_flag']=1;
+        }
+        
         //セッションからurlを取得
         $url = session()->get('url');
         $input['url']=$url;
@@ -98,6 +104,20 @@ class BookmarkController extends Controller
         $input['user_id']=Auth::user()->id;
         //dd($tag_ids);
         $bookmark->fill($input)->save();
+        
+        //目次の処理
+        if($request->has('contents_url')){
+            $contents_url=$request['contents_url'];
+            $contents_title=$request['contents_title'];
+            for($i=0; $i<count($contents_url); $i++){
+                $content=New Content();
+                $content->contents_url=$contents_url[$i];
+                $content->contents_title=$contents_title[$i];
+                $content->contents_index=$i+1;
+                $content->bookmark_id=\App\Models\Bookmark::where('user_id',Auth::user()->id)->latest('id')->first()->id;
+                $content->save();
+            }
+        }
         
         $bookmark->tags()->attach($tag_ids);
         return redirect('/');

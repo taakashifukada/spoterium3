@@ -25,10 +25,7 @@ Route::get('/', function () {
     ]);
 });
 */
-Route::get('/welcome',function(){
-    return view('welcome');
-});
-Route::post('/welcome',[BookmarkController::class, 'postWelcome']);
+Route::get('/welcome',[BookmarkController::class, 'welcome']);
 
 Route::group(['middleware' => ['auth']], function(){
     //URL追加
