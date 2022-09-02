@@ -1,53 +1,42 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <body>
-        <form action="/welcome" method="POST">
-            @csrf
-            <textarea name="testes"></textarea>
-            <div id="mokuji">
-                <div v-for="(text,index) in contents_url">
-                    <!--入力ボックス-->
-                    <input type="text" placeholder="URL" v-model="contents_url[index]" name="url[]" required/>
-                    <input type="text" placeholder="Title" v-model="contents_title[index]" name="titile[]" required/>
-                    <!--削除ボタン-->
-                    <button type="button" @click="removeInput(index)">削除</button>
-                </div>
-                
-                <!-- 入力ボックスを追加するボタン ② -->
-                <button type="button" @click="addInput">追加する</button>
-            </div>
-            <input type='submit' value="作成"/>
-        </form>
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+    </head>
+    <body>
+       <img src="http://www.google.com/s2/favicons?domain=https://www.youtube.com/">
+        
+        <div id="app">
+            <p v-bind:id="num"></p>
+          @{{ message }}
+          @{{ divId }}
+          @{{ num }}
+          @{{ divId }}
+          
+        </div>
+        
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
         
         <script>
-            new Vue({
-                el: '#mokuji',
-                data: {
-                    contents_url: [], // 複数入力のデータ（配列）
-                    contents_title: [],
-                },
-                methods: {
-        
-                    // ボタンをクリックしたときのイベント ①〜③
-                    removeInput(index) {
-
-                        this.contents_url.splice(index, 1); // 👈 該当するデータを削除(index:削除開始の番号、1:削除する個数)
-                        this.contents_titile.splice(index, 1);
-            
-                    },
-                    addInput() {
-
-                        this.contents_url.push(''); // 配列に１つ空データを追加する
-                        this.contents_title.push('');
-            
-                    },
-                    
+            var app = new Vue({
+              el: '#app',
+              data: {
+                message: 'Hello Vue!',
+                num:1
+              },
+              computed: {
+                divId: function()
+                {
+                    this.num += 1
+                    return this.num
                 }
-            });
-            
+              }
+            })
         </script>
     </body>
 </html>

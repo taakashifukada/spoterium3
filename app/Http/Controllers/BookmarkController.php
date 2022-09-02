@@ -15,15 +15,15 @@ class BookmarkController extends Controller
 {
     //Bookmarkモデルのインスタンスを$bookmarkに格納
     //
-    public function postWelcome(Request $request, Bookmark $bookmark){
-        dd($request);
-        return redirect('/login');
+    public function welcome(Bookmark $bookmark)
+    {
+        return view('welcome')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
     }
     
     public function topPage(Bookmark $bookmark)
     {
         //dd($bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)->first());
-        return view('bookmarks.top')->with(['bookmark'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)->first()]);
+        return view('bookmarks.top')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
     }
     
     public function addUrl()
