@@ -8,7 +8,7 @@
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     </head>
     <body>
-       <img src="http://www.google.com/s2/favicons?domain=https://www.youtube.com/">
+       <img id='fabicon' src="http://www.google.com/s2/favicons?domain=https://www.youtube.com/">
         
         <div id="app">
             <p v-bind:id="num"></p>

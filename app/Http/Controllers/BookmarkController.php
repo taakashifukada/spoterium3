@@ -26,6 +26,24 @@ class BookmarkController extends Controller
         return view('bookmarks.top')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
     }
     
+    public function showTagpage(Request $request, Bookmark $bookmark)
+    {
+        $tid=$request->tag_id;
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents'])->whereHas('tags', function($query) use ($request){
+            $query->where('id','=',$request->tag_id);
+        })->where('user_id',Auth::user()->id)->orderby('updated_at', 'DESC')->paginate(20);
+        //dd($bookmarks);
+        return view('bookmarks.tagpage')->with(['bookmarks'=>$bookmarks]);
+    }
+    
+    public function showCategorypage(Request $request, Bookmark $bookmark)
+    {
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents'])->where('category_id','=',$request->category_id)
+        ->where('user_id',Auth::user()->id)->orderby('updated_at', 'DESC')->paginate(20);
+        //dd($bookmarks);
+        return view('bookmarks.tagpage')->with(['bookmarks'=>$bookmarks]);
+    }
+    
     public function addUrl()
     {
         return view('bookmarks.addUrl');
