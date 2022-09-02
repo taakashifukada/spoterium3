@@ -8,6 +8,8 @@
         
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+        
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     </head>
     <body>
         <form method="POST" action="{{ route('logout') }}" required>

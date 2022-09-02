@@ -24,9 +24,9 @@
                 ログアウト
             </x-dropdown-link>
         </form>
+        <a href='/'>toppage</a>
         <main>
             <a href="/add/url">Bookmarkを追加</a>
-            <p>ブックマーク履歴</p>
             @foreach($bookmarks as $bookmark)
                 <div class="bookmark_idx">
                     <p class="updated_idx">"{{ $bookmark->updated_at}}"</p>
@@ -36,9 +36,7 @@
                     <div class="textzone_idx">
                         <a href="{{ $bookmark->url }}" class="title_idx">{{ $bookmark->title }}</a>
                         <p class="comment_idx">{{ $bookmark->comment }}</p>
-                        <div class='category_idx'>
-                            カテゴリ:<a href='/categories?category_id={{ $bookmark->category->id}}' class='category_idx'>{{ $bookmark->category->name }}</a>
-                        </div>
+                        <p class='category_idx'>カテゴリ:{{ $bookmark->category->name }}</p>
                         <div class="tags_idx">
                             タグ:
                             @foreach($bookmark->tags as $tag)

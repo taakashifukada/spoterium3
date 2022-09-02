@@ -1,3 +1,11 @@
+/*welcome*/
+img#fabicon{
+    width: 240px;
+    height: 135px;
+    object-fit: cover;
+}
+
+/* toppage */
 img.thumbnail_idx {
     width: 240px;
     height: 135px;
@@ -66,4 +74,12 @@ img.thumbnail_idx {
 
 .mokuji_idx{
     margin-left:50px;
+}
+
+/* add_detail */
+
+img#preview{
+    width: 240px;
+    height: 135px;
+    object-fit: cover;
 }
