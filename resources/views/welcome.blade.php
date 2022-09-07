@@ -1,42 +1,37 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <!--JavaScript-->
+        <script src="{{asset('js/suggest.js')}}"></script>
     </head>
     <body>
-       <img id='fabicon' src="http://www.google.com/s2/favicons?domain=https://www.youtube.com/">
-        
-        <div id="app">
-            <p v-bind:id="num"></p>
-          @{{ message }}
-          @{{ divId }}
-          @{{ num }}
-          @{{ divId }}
-          
-        </div>
-        
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14/dist/vue.js"></script>
+       <form onsubmit="return false;">
+          <table>
+            <tr>
+              <td>入力:</td>
+              <td>
+                <!-- 入力フォーム -->
+                <input id="text" type="text" name="pattern" value="" autocomplete="off" size="10" style="display: block">
+                <!-- 補完候補を表示するエリア -->
+                <div id="suggest" style="display:none;"></div>
+              </td>
+            </tr>
+          </table>
+        </form>
         
         <script>
-            var app = new Vue({
-              el: '#app',
-              data: {
-                message: 'Hello Vue!',
-                num:1
-              },
-              computed: {
-                divId: function()
-                {
-                    this.num += 1
-                    return this.num
-                }
-              }
-            })
+            function startSuggest() {
+              new Suggest.Local(
+                    "text",    // 入力のエレメントID
+                    "suggest", // 補完候補を表示するエリアのID
+                    list,      // 補完候補の検索対象となる配列
+                    {dispMax: 10, interval: 1000}); // オプション
+            }
+            
+            window.addEventListener ?
+              window.addEventListener('load', startSuggest, false) :
+              window.attachEvent('onload', startSuggest);
         </script>
     </body>
 </html>

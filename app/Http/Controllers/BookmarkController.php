@@ -8,6 +8,7 @@ use App\Models\Bookmark;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Content;
+use App\Models\Folder;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -17,13 +18,26 @@ class BookmarkController extends Controller
     //
     public function welcome(Bookmark $bookmark)
     {
+        $tag_names=Tag::where('user_id',Auth::user()->id)->select('name')->get();
+        dd($tag_names);
+        
         return view('welcome')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
     }
     
-    public function topPage(Bookmark $bookmark)
+    public function toppage(Bookmark $bookmark)
+    {
+        $bookmarks_fav=Bookmark::with(['category', 'tags', 'contents','folder'])->where('folder_id','=',2)
+        ->where('user_id',Auth::user()->id)->orderby('updated_at', 'desc')->get();
+        
+        $bookmarks_new=Bookmark::where('user_id',Auth::user()->id)->orderby('updated_at', 'desc')->limit(5)->get();
+
+        return view('bookmarks.top')->with(['bookmarks_fav'=>$bookmarks_fav,'bookmarks_new'=>$bookmarks_new]);
+    }
+    
+    public function historyPage(Bookmark $bookmark)
     {
         //dd($bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)->first());
-        return view('bookmarks.top')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
+        return view('bookmarks.history')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
     }
     
     public function showTagpage(Request $request, Bookmark $bookmark)
@@ -42,6 +56,14 @@ class BookmarkController extends Controller
         ->where('user_id',Auth::user()->id)->orderby('updated_at', 'DESC')->paginate(20);
         //dd($bookmarks);
         return view('bookmarks.tagpage')->with(['bookmarks'=>$bookmarks]);
+    }
+    
+    public function showFolderpage(Request $request, Bookmark $bookmark)
+    {
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents','folder'])->where('folder_id','=',$request->folder_id)
+        ->where('user_id',Auth::user()->id)->orderby('updated_at', 'DESC')->paginate(20);
+        //dd($bookmarks);
+        return view('bookmarks.folderpage')->with(['bookmarks'=>$bookmarks]);
     }
     
     public function addUrl()
@@ -78,16 +100,17 @@ class BookmarkController extends Controller
     public function storeBookmark(Request $request, Bookmark $bookmark)
     {
         $input = $request['bookmark'];
-        $category_name=$input['category_name'];
-        //Categoryの存在確認->なければ追加
-        if($category_name!=null){
-            if(\DB::table('categories')->where('name', $category_name)->exists() != True){
-                $category = New Category();
-                $category->name=$category_name;
-                $category->save();
+        
+        //folderの管理
+        if(isset($input["folder_name"])){
+            $folder_name=$input['folder_name'];
+            if(\DB::table('folders')->where('name', $folder_name)->exists() != True){
+                $folder = New Folder();
+                $folder->name=$folder_name;
+                $folder->save();
             };
             //\App\Category = DB::table(categories)
-            $input['category_id']=\App\Models\Category::where('name',$input['category_name'])->first()->id;
+            $input['folder_id']=\App\Models\Folder::where('name',$input['folder_name'])->first()->id;
         };
         
         //Tagの整理
@@ -138,6 +161,6 @@ class BookmarkController extends Controller
         }
         
         $bookmark->tags()->attach($tag_ids);
-        return redirect('/');
+        return redirect('/history');
     }
 }

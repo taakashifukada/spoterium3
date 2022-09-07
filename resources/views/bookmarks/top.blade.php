@@ -16,49 +16,46 @@
         <!-- script -->
     </head>
     <body>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <x-dropdown-link :href="route('logout')"
-                    onclick="event.preventDefault();
-                                this.closest('form').submit();">
-                ログアウト
-            </x-dropdown-link>
-        </form>
+        <div class=header>
+            <a class=header_top href="/">Top</a>
+            <div class=header_category1>カテゴリ1</div>
+            <div class=header_category2>カテゴリ2</div>
+            <div class=header_category3>カテゴリ3</div>
+            <a class=header_history href="/history">履歴</a>
+            <div class=header_folder>Folders</div>
+            <div class=header_search>検索</div>
+            <div class=header_logout>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        ログアウト
+                    </x-dropdown-link>
+                </form>
+            </div>
+            <a href="/add/url">NEW</a>
+        </div>
         <main>
-            <a href="/add/url">Bookmarkを追加</a>
-            <p>ブックマーク履歴</p>
-            @foreach($bookmarks as $bookmark)
-                <div class="bookmark_idx">
-                    <p class="updated_idx">"{{ $bookmark->updated_at}}"</p>
-                    <div class="imgzone_idx">
-                        <img src="{{ $bookmark->img_path }}" class="thumbnail_idx">
+            <div class=bookmarks_top>
+                @for ($i=0; $i<8 && $i<count($bookmarks_fav); $i++)
+                    <div class=bookmark_top>
+                        <a href="{{ $bookmarks_fav[$i]->url }}">
+                            <img src="{{ $bookmarks_fav[$i]->img_path }}" class=icon_top>
+                        </a>
+                        <div class=title_top>{{ $bookmarks_fav[$i]->title }}</div>
                     </div>
-                    <div class="textzone_idx">
-                        <a href="{{ $bookmark->url }}" class="title_idx">{{ $bookmark->title }}</a>
-                        <p class="comment_idx">{{ $bookmark->comment }}</p>
-                        <div class='category_idx'>
-                            カテゴリ:<a href='/categories?category_id={{ $bookmark->category->id}}' class='category_idx'>{{ $bookmark->category->name }}</a>
-                        </div>
-                        <div class="tags_idx">
-                            タグ:
-                            @foreach($bookmark->tags as $tag)
-                                <a href="/tags?tag_id={{ $tag->id }}">{{ $tag->name }}</a>
-                            @endforeach
-                        </div>
+                @endfor
+            </div>
+            <div class=history_top>
+                <p>更新履歴</p>
+                @foreach ($bookmarks_new as $bookmark)
+                    <div class=news_top>
+                        <a href="{{ $bookmark->url }}" class=news_title_top>・{{ $bookmark->title }}</a>
+                        <div class=news_time_top>{{ $bookmark->updated_at }}</div>
                     </div>
-                </div>
-                <div class="mokuji_idx">
-                    <a data-toggle="collapse" href="#collapse{{$bookmark->id}}">▼目次</a>
-                    <div id="collapse{{$bookmark->id}}" class="panel-collapse collapse">
-                        @foreach($bookmark->contents as $content)
-                            <p>{{ $content->contents_index }}</p>
-                            <a href="{{ $content->contents_url }}">{{ $content->contents_title }}</a>
-                        @endforeach
-                    </div>
-                </div>
-                <hr>
-            @endforeach
-            
+                @endforeach
+            </div>
         </main>
         <!-- bootstrap js -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
