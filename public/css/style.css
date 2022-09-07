@@ -1,11 +1,102 @@
 /*welcome*/
-img#fabicon{
-    width: 240px;
-    height: 135px;
-    object-fit: cover;
+#suggest {
+    position: absolute;
+    background-color: #FFFFFF;
+    border: 1px solid #CCCCFF;
+    font-size: 90%;
+    width: 200px;
+}
+#suggest div {
+    display: block;
+    width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+#suggest div.select{ /* キー上下で選択した場合のスタイル */
+    color: #FFFFFF;
+    background-color: #3366FF;
+}
+#suggest div.over{ /* マウスオーバ時のスタイル */
+    background-color: #99CCFF;
+}
+/*body*/
+body {
+    background-color: #5e937e;
+    color: #dae8eb;
 }
 
-/* toppage */
+/*toppage*/
+.header {
+    background-color: #feb57b;
+    display: grid;
+    padding:20px 80px;
+    grid-template-columns: repeat(4,80px) 80px 1fr 80px 80px 80px;
+    grid-template-rows: 20px;
+}
+
+.bookmarks_top {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 200px;
+    
+    width: 640px;
+    height:100px;
+    border: 1px solid;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.bookmark_top {
+    margin: auto;
+    width:80px;
+    height: 100px;
+    text-align: center;
+    display: grid;
+    grid-template-rows: 80px 20px;
+    border: 1px solid;
+}
+
+.icon_top {
+    margin: auto;
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    grid-rows:1/2; 
+}
+
+.title_top {
+    margin: auto;
+    grid-rows:2/3;
+}
+
+.history_top {
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 300px;
+    
+    width: 400px;
+    
+    border: 1px solid;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.news_top {
+    width: 400px;
+    
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* historypage */
 img.thumbnail_idx {
     width: 240px;
     height: 135px;
@@ -66,7 +157,7 @@ img.thumbnail_idx {
     font-size:small;
 }
 
-.category_idx {
+.folder_idx {
     grid-row:1/2;
     grid-column:2/3;
     font-size:small;

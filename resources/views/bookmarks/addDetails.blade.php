@@ -28,8 +28,8 @@
                 @csrf
                 <p class='title'>ブックマークのタイトル</p>
                 <input type="text" name="bookmark[title]" placeholder="Title" required />
-                <p class='title'>カテゴリ</p>
-                <input type="text" name="bookmark[category_name]" placeholder="Category"/>
+                <p class='title'>フォルダ</p>
+                <input type="text" name="bookmark[folder_name]" placeholder="Folder"/>
                 <p class='title'>タグ</p>
                 <input type="text" name="bookmark[tag_names]" placeholder="スペース区切りでタグを入力"/>
                 <p class='title'>サムネイル</p>

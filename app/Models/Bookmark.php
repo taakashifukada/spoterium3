@@ -19,6 +19,7 @@ class Bookmark extends Model
         'img_path',
         'comment',
         'contents_flag',
+        'folder_id'
     ];
     
     public function user()
@@ -29,6 +30,11 @@ class Bookmark extends Model
     public function category()
     {
         return $this->belongsTo('App\Models\Category');
+    }
+    
+    public function folder()
+    {
+        return $this->belongsTo('App\Models\Folder');
     }
     
     public function contents()
@@ -42,6 +48,6 @@ class Bookmark extends Model
     
     function getPaginateByLimit(int $limit_count = 5)
     {
-        return $this::with(['category', 'tags', 'contents'])->orderBy('updated_at', 'DESC')->paginate($limit_count);
+        return $this::with(['category', 'tags', 'contents',"folder"])->orderBy('updated_at', 'DESC')->paginate($limit_count);
     }
 }

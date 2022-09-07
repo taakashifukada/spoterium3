@@ -24,9 +24,10 @@
                 ログアウト
             </x-dropdown-link>
         </form>
-        <a href='/'>toppage</a>
         <main>
             <a href="/add/url">Bookmarkを追加</a>
+            <a href="/">toppage</a>
+            <p>ブックマーク履歴</p>
             @foreach($bookmarks as $bookmark)
                 <div class="bookmark_idx">
                     <p class="updated_idx">"{{ $bookmark->updated_at}}"</p>

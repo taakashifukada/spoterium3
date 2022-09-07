@@ -10,6 +10,12 @@ class Content extends Model
 {
     use HasFactory;
     
+    protected $fillable = [
+        'name',
+        'contents_url',
+        'contents_title'
+    ];
+    
     public function bookmark()   
     {
         return $this->belongsTo('App\Bookmark');  
