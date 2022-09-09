@@ -10,7 +10,7 @@
             <form onsubmit="return false;">
               <table>
                 <tr>
-                  <td>入力:</td>
+                  <td>検索:</td>
                   <td>
                     <!-- 入力フォーム -->
                     <input id="text" type="text" name="pattern" v-model="keyword" autocomplete="off" size="10" style="display: block">
@@ -20,15 +20,22 @@
                 </tr>
               </table>
             </form>
-            <table>
-                <tr v-for="bookmark in filteredBookmarks" :key="bookmark.id">
-                    <td v-text="bookmark.id"></td>
-                    <td v-text="bookmark.title"></td>
-                </tr>
-            </table>
+            
+            <div v-for="bookmark in filteredBookmarks" :key="bookmark.id">
+                <a :href="bookmark.url" v-text="bookmark.title"></a>
+                フォルダ:<a :href="'/folders?folder_id=' + bookmark.folder.id">@{{ bookmark.folder.name }}</a>
+                
+            </div>
         </div>
+        <script>
+            let inp = document.getElementById("text");
+            console.log(inp.value);
+        </script>
+        
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
         <script>
+            console.log(@json($bookmarks));
+        
             const vue = new Vue({
                 el: '#search',
                 data: {
@@ -42,7 +49,8 @@
                         for (let i in this.bookmarks) {
                             let bookmark = this.bookmarks[i];
                             
-                            if(bookmark.title.indexOf(this.keyword) !== -1) {
+                            if(bookmark.title.indexOf(this.keyword) !== -1 ||
+                                bookmark.folder.name.indexOf(this.keyword) !== -1) {
                                 bookmarks.push(bookmark)
                             }
                         }
@@ -61,14 +69,12 @@
             const tags=[];
             for (let i=0; i<data.length; i++){
                 tags.push(data[i]['name']);
-            }
-            console.log(tags);
+            };
             
             const folders=[];
             for (let i=0; i<data2.length; i++){
                 folders.push(data2[i]['name']);
             }
-            console.log(folders);
             
             const bookmarks=[];
             for (let i=0; i<data3.length; i++){
@@ -77,10 +83,9 @@
             
             let list=[];
             list=list.concat(tags,folders,bookmarks);
-            console.log(list);
         
             function startSuggest() {
-              new Suggest.Local(
+              new Suggest.LocalMulti(
                     "text",    // 入力のエレメントID
                     "suggest", // 補完候補を表示するエリアのID
                     list,      // 補完候補の検索対象となる配列

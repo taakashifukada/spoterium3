@@ -16,12 +16,38 @@ class BookmarkController extends Controller
 {
     //Bookmarkモデルのインスタンスを$bookmarkに格納
     //
-    public function welcome(Bookmark $bookmark)
+    public function welcome()
     {
-        $tag_names=Tag::where('user_id',Auth::user()->id)->select('name')->get();
-        dd($tag_names);
+        $tag_names=Tag::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('name')->get()->toArray();
         
-        return view('welcome')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
+        $folder_names=Folder::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('name')->get()->toArray();
+        
+        $bookmark_titles=Bookmark::where('user_id',Auth::user()->id)->select('title')->get()->toArray();
+        
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents','folder'])->where('user_id',Auth::user()->id)->get();
+        
+        return view('welcome')->with(['tag_names'=>$tag_names,'folder_names'=>$folder_names,'bookmark_titles'=>$bookmark_titles,"bookmarks"=>$bookmarks]);
+    }
+    
+    public function search()
+    {
+        $tag_names=Tag::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('name')->get()->toArray();
+        
+        $folder_names=Folder::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('name')->get()->toArray();
+        
+        $bookmark_titles=Bookmark::where('user_id',Auth::user()->id)->select('title')->get()->toArray();
+        
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents','folder'])->where('user_id',Auth::user()->id)->get();
+        
+        return view('bookmarks.search')->with(['tag_names'=>$tag_names,'folder_names'=>$folder_names,'bookmark_titles'=>$bookmark_titles,"bookmarks"=>$bookmarks]);
     }
     
     public function toppage(Bookmark $bookmark)

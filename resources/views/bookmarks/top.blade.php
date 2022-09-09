@@ -23,7 +23,7 @@
             <div class=header_category3>カテゴリ3</div>
             <a class=header_history href="/history">履歴</a>
             <div class=header_folder>Folders</div>
-            <div class=header_search>検索</div>
+            <a class=header_search href='/search'>検索</a>
             <div class=header_logout>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
