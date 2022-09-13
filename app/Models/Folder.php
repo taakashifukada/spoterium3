@@ -12,6 +12,6 @@ class Folder extends Model
     
     public function bookmarks()   
     {
-        return $this->hasMany('App\Bookmark');  
+        return $this->hasMany('App\Models\Bookmark');  
     }
 }

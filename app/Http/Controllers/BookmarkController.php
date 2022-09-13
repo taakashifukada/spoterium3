@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Tag;
 use App\Models\Content;
 use App\Models\Folder;
+use App\Models\User;
 
 use Illuminate\Support\Facades\Storage;
 
@@ -16,22 +17,59 @@ class BookmarkController extends Controller
 {
     //Bookmarkモデルのインスタンスを$bookmarkに格納
     //
-    public function welcome(Bookmark $bookmark)
+    public function welcome()
     {
-        $tag_names=Tag::where('user_id',Auth::user()->id)->select('name')->get();
-        dd($tag_names);
+        $tag_names=Tag::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('name')->get()->toArray();
         
-        return view('welcome')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
+        $folder_names=Folder::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('name')->get()->toArray();
+        
+        $bookmark_titles=Bookmark::where('user_id',Auth::user()->id)->select('title')->get()->toArray();
+        
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents','folder'])->where('user_id',Auth::user()->id)->get();
+        
+        return view('welcome')->with(['tag_names'=>$tag_names,'folder_names'=>$folder_names,'bookmark_titles'=>$bookmark_titles,"bookmarks"=>$bookmarks]);
+    }
+    
+    public function search()
+    {
+        $tag_names=Tag::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('id','name')->orderBy('name')->get()->toArray();
+        
+        $folder_names=Folder::with(['bookmarks'])->whereHas('bookmarks', function($query) {
+            $query->where('user_id',Auth::user()->id);
+        })->select('name')->get()->toArray();
+        
+        $bookmark_titles=Bookmark::where('user_id',Auth::user()->id)->select('title')->get()->toArray();
+        
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents','folder'])->where('user_id',Auth::user()->id)->orderBy('title')->get();
+        
+        return view('bookmarks.search')->with(['tag_names'=>$tag_names,'folder_names'=>$folder_names,'bookmark_titles'=>$bookmark_titles,"bookmarks"=>$bookmarks]);
     }
     
     public function toppage(Bookmark $bookmark)
     {
+        $favs_saved=User::where('id',Auth::user()->id)->select('favs_id')->get();
         $bookmarks_fav=Bookmark::with(['category', 'tags', 'contents','folder'])->where('folder_id','=',2)
         ->where('user_id',Auth::user()->id)->orderby('updated_at', 'desc')->get();
         
         $bookmarks_new=Bookmark::where('user_id',Auth::user()->id)->orderby('updated_at', 'desc')->limit(5)->get();
 
-        return view('bookmarks.top')->with(['bookmarks_fav'=>$bookmarks_fav,'bookmarks_new'=>$bookmarks_new]);
+        return view('bookmarks.top')->with(['bookmarks_fav'=>$bookmarks_fav,'bookmarks_new'=>$bookmarks_new, 'favs_saved'=>$favs_saved]);
+    }
+    
+    public function saveFavsTop(Request $request)
+    {
+        $ids=request()->all();
+        $str_ids=implode(",",$ids['favs_id']);
+        User::where('id',Auth::user()->id)->update([
+                "favs_id"=> $str_ids,
+            ]);
+        
     }
     
     public function historyPage(Bookmark $bookmark)

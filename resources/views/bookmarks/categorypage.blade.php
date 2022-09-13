@@ -40,7 +40,9 @@
                         <div class="tags_idx">
                             タグ:
                             @foreach($bookmark->tags as $tag)
-                                <a href="/tags?tag_id={{ $tag->id }}">{{ $tag->name }}</a>
+                                <span>
+                                    <a href="/tags?tag_id={{ $tag->id }}">{{ $tag->name }}</a>
+                                </span>
                             @endforeach
                         </div>
                     </div>
