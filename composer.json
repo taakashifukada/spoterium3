@@ -53,6 +53,9 @@
             "php artisan clear-compiled",  
             "php artisan optimize",  
             "chmod -R 777 public/"  
+        ],
+        "compile": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ]
     },
     "extra": {
