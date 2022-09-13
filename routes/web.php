@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth']], function(){
     })->middleware(['auth'])->name('dashboard');
     
     Route::get('/',[BookmarkController::class, 'topPage']);
+    Route::post('/',[BookmarkController::class, 'saveFavsTop']);
     Route::get('/search',[BookmarkController::class, 'search']);
     Route::get('/history',[BookmarkController::class, 'historyPage']);
     Route::get('/add/url', [BookmarkController::class, 'addUrl']);

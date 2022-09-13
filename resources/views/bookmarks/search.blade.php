@@ -2,73 +2,127 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-        <!--JavaScript-->
-        <script src="{{asset('js/suggest.js')}}"></script>
+        <link rel="stylesheet" href="{{ asset('css/vue-simple-suggest.css') }}">
+        
+        
+        <!-- bootstrap -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <!-- bootstrap js -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+        
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     </head>
     <body>
+        <div class=header>
+            <a class=header_top href="/">Top</a>
+            <a class=header_history href="/history">履歴</a>
+            <div class=header_folder>Folders</div>
+            <a class=header_search href='/search'>検索</a>
+            <div class=header_logout>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        ログアウト
+                    </x-dropdown-link>
+                </form>
+            </div>
+            <a href="/add/url">NEW</a>
+        </div>
+        
         <div id="search">
-            <form onsubmit="return false;">
-              <table>
-                <tr>
-                  <td>検索:</td>
-                  <td>
-                    <!-- 入力フォーム -->
-                    <input id="text" type="text" name="pattern" v-model="keyword" autocomplete="off" size="10" style="display: block">
-                    <!-- 補完候補を表示するエリア -->
-                    <div id="suggest" style="display:none;"></div>
-                  </td>
-                </tr>
-              </table>
-            </form>
             
-            <div v-for="bookmark in filteredBookmarks" :key="bookmark.id">
-                <a :href="bookmark.url" v-text="bookmark.title"></a>
-                フォルダ:<a :href="'/folders?folder_id=' + bookmark.folder.id">@{{ bookmark.folder.name }}</a>
-                
+            <div class="search_form">
+                <form @submit.prevent>
+                    <input type='search' id="search_box" @input="bindKeyword" :value="keyword" @keydown.enter='getSuggestion(0)' autocomplete="off" placeholder="検索ワードで絞込み">
+                </form>
+                <div class="suggest_panel" v-if="keywordLast.length && open">
+                    <ul class="list-group">
+                        <li
+                            v-for="(suggest, index) in filteredSuggestion"
+                            class="list-group-item list-group-item-action"
+                            @click='getSuggestion(index)'
+                            v-text="suggest"
+                        ></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div id='search_tab'>
+                <ul class="tab_list">
+                    <li @click="isSelect('1')" :class="{'active': isActive == '1'}">ブックマーク</li>
+                    <li @click="isSelect('2')" :class="{'active': isActive == '2'}">タグ</li>
+                </ul>
+            </div>
+            <div class="tabContents">
+                <div v-if="isActive === '1'">
+                    <div v-for="(bookmark, index) in filteredBookmarks" v-if='index < 200' :key="bookmark.id">
+                        <div class="bookmark_idx">
+                            <p class="updated_idx">@{{bookmark.updated_at}}</p>
+                            <div class="imgzone_idx">
+                                <img :src="bookmark.img_path" class="thumbnail_idx">
+                            </div>
+                        
+                            <div class="textzone_idx">
+                                <a :href="bookmark.url" class="title_idx" v-text="bookmark.title"></a>
+                                <p class="comment_idx">@{{ bookmark.comment }}</p>
+                                <div class='folder_idx'>
+                                    フォルダ:<a :href="'/folders?folder_id=' + bookmark.folder_id">@{{ bookmark.folder.name }}</a>
+                                </div>
+                                <div class="tags_idx">
+                                    タグ:
+                                    <div v-for="tag in bookmark.tags" :key="tag.id">
+                                        <span>
+                                            <a :href="'/tags?tag_id=' + tag.id">@{{ tag.name }}</a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mokuji_idx">
+                            <a data-toggle="collapse" :href="'#collapse' + bookmark.id">▼目次</a>
+                            <div v-bind:id="'collapse' + bookmark.id" class="panel-collapse collapse">
+                                <div v-for="content in bookmark.contents" :key="content.id">
+                                    <p>@{{ content.contents_index }}</p>
+                                    <a :href=" content.contents_url ">@{{ content.contents_title }}</a>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                <div v-else-if="isActive === '2'">
+                    <div v-for="(tag, index) in filteredTags" v-if='index < 1000' :key="tag.id" class="search_tags">
+                        <a :href="'/tags?tag_id=' + tag.id">@{{ tag.name }}</a>
+                    </div>
+                </div>
             </div>
         </div>
+        
+        
         <script>
-            let inp = document.getElementById("text");
-            console.log(inp.value);
+            let a="1 2 3 4 ";
+            var separatorString = /\s+/;
+            var arrayStrig = a.split(separatorString);
+            console.log(arrayStrig);
         </script>
         
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+        <script type="text/javascript" src="https://unpkg.com/vue-simple-suggest"></script>
+        
+        
         <script>
             console.log(@json($bookmarks));
-        
-            const vue = new Vue({
-                el: '#search',
-                data: {
-                    keyword: "test",
-                    bookmarks: @json($bookmarks),
-                },
-                computed: {
-                    filteredBookmarks: function() {
-                        let bookmarks = [];
-                        
-                        for (let i in this.bookmarks) {
-                            let bookmark = this.bookmarks[i];
-                            
-                            if(bookmark.title.indexOf(this.keyword) !== -1 ||
-                                bookmark.folder.name.indexOf(this.keyword) !== -1) {
-                                bookmarks.push(bookmark)
-                            }
-                        }
-                        
-                        return bookmarks;
-                    }
-                }
-            });
-        </script>
-        
-        <script>
-            const data = @json($tag_names);
+            const tags_data = @json($tag_names);
             const data2 = @json($folder_names);
             const data3 = @json($bookmark_titles);
             
             const tags=[];
-            for (let i=0; i<data.length; i++){
-                tags.push(data[i]['name']);
+            for (let i=0; i<tags_data.length; i++){
+                tags.push(tags_data[i]['name']);
             };
             
             const folders=[];
@@ -84,17 +138,112 @@
             let list=[];
             list=list.concat(tags,folders,bookmarks);
         
-            function startSuggest() {
-              new Suggest.LocalMulti(
-                    "text",    // 入力のエレメントID
-                    "suggest", // 補完候補を表示するエリアのID
-                    list,      // 補完候補の検索対象となる配列
-                    {dispMax: 10, interval: 1000}); // オプション
-            }
-            
-            window.addEventListener ?
-              window.addEventListener('load', startSuggest, false) :
-              window.attachEvent('onload', startSuggest);
+            const vue = new Vue({
+                el: '#search',
+                data: {
+                    keyword: "",
+                    suggestionList: list,
+                    bookmarks: @json($bookmarks),
+                    isActive: "1",
+                    tags: tags_data
+                },
+                methods: {
+                    bindKeyword({ target }) {
+                        this.keyword =  target.value;
+                    },
+                    
+                    getSuggestion: function(index) {
+                        let keywords=this.keywords;
+                        keywords[keywords.length - 1]=this.filteredSuggestion[index];
+                        let keywordString=keywords.join(" ")+ " ";
+                        this.keyword = keywordString;
+                    },
+                    
+                    isSelect: function (num) {
+                        this.isActive = num;
+                    }
+                },
+                computed: {
+                    filteredBookmarks: function() {
+                        let bookmarks = [];
+                        
+                        for (let i in this.bookmarks) {
+                            let bookmark = this.bookmarks[i];
+                            
+                            let tags="";
+                            for (const elem of this.bookmarks[i].tags) {
+                                tags = tags + elem.name + " ";
+                            }
+                            
+                            let push_flag=Boolean("true");
+                            for (let j in this.keywords){
+                                if(bookmark.title.indexOf(this.keywords[j]) == -1 &&
+                                    bookmark.folder.name.indexOf(this.keywords[j]) == -1 &&
+                                    tags.indexOf(this.keywords[j]) == -1) {
+                                    push_flag=Boolean("");
+                                }
+                            }
+                            if (push_flag) {
+                                bookmarks.push(bookmark)
+                            }
+                        }
+                        return bookmarks;
+                    },
+                    
+                    filteredTags: function() {
+                        let tags = [];
+                        
+                        for (let i in this.tags) {
+                            let tag = this.tags[i];
+                            
+                            let push_flag=Boolean("true");
+                            for (let j in this.keywords){
+                                if(tag.name.indexOf(this.keywords[j]) == -1) {
+                                    push_flag=Boolean("");
+                                }
+                            }
+                            if (push_flag) {
+                                tags.push(tag)
+                            }
+                        }
+                        return tags;
+                    },
+                        
+                    filteredSuggestion: function() {
+                        let list = [];
+                        
+                        for (let i=0; i<this.suggestionList.length; i++) {
+                            let suggest = this.suggestionList[i];
+                            key_kata=this.keywordLast.replace(/[\u3041-\u3096]/g, function(match) {
+                                    var chr = match.charCodeAt(0) + 0x60;
+                                    return String.fromCharCode(chr);
+                                });
+                            key=new RegExp(this.keywordLast, "gi");
+                            key_kata=new RegExp(key_kata, "gi");
+                            match=key.test(suggest) || key_kata.test(suggest);
+                            if(match && suggest.length<20) {
+                                list.push(suggest)
+                            }
+                        }
+                        console.log(list);
+                        return list;
+                    },
+                    
+                    keywords: function() {
+                        let keyword=this.keyword.replace(/　/g, " ");
+                        let separatorString = /\s+/;
+                        let keywords = keyword.split(separatorString);
+                        
+                        return keywords;
+                    },
+                    
+                    keywordLast: function() {
+                        let keywordLast=this.keywords.slice(-1)[0];
+                        
+                        return keywordLast;
+                    }
+                }
+            });
         </script>
     </body>
 </html>
