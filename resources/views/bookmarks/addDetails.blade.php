@@ -8,19 +8,28 @@
         
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
     </head>
     <body>
-        <form method="POST" action="{{ route('logout') }}" required>
-            @csrf
-        
-            <x-dropdown-link :href="route('logout')"
-                    onclick="event.preventDefault();
-                                this.closest('form').submit();">
-                {{ __('Log out') }}
-            </x-dropdown-link>
-        </form>
+        <div class=header>
+            <a class=header_top href="/">Top</a>
+            <a class=header_history href="/history">履歴</a>
+            <div class=header_folder>Folders</div>
+            <a class=header_search href='/search'>検索</a>
+            <div class=header_logout>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        ログアウト
+                    </x-dropdown-link>
+                </form>
+            </div>
+            <a href="/add/url">NEW</a>
+        </div>
         <p>ブックマークの詳細</p>
         <p>URL:{{ $url }}</p>
         <div id='details_form'>
