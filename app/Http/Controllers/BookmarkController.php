@@ -19,19 +19,8 @@ class BookmarkController extends Controller
     //
     public function welcome()
     {
-        $tag_names=Tag::with(['bookmarks'])->whereHas('bookmarks', function($query) {
-            $query->where('user_id',Auth::user()->id);
-        })->select('name')->get()->toArray();
         
-        $folder_names=Folder::with(['bookmarks'])->whereHas('bookmarks', function($query) {
-            $query->where('user_id',Auth::user()->id);
-        })->select('name')->get()->toArray();
-        
-        $bookmark_titles=Bookmark::where('user_id',Auth::user()->id)->select('title')->get()->toArray();
-        
-        $bookmarks=Bookmark::with(['category', 'tags', 'contents','folder'])->where('user_id',Auth::user()->id)->get();
-        
-        return view('welcome')->with(['tag_names'=>$tag_names,'folder_names'=>$folder_names,'bookmark_titles'=>$bookmark_titles,"bookmarks"=>$bookmarks]);
+        return view('welcome');
     }
     
     public function search()
