@@ -25,7 +25,7 @@ Route::get('/', function () {
     ]);
 });
 */
-Route::get('/welcome',function(){echo('aa');});
+Route::get('/welcome',[BookmarkController::class, 'welcome']);
 Route::get('/',function(){
     $message = view();
     dd($message);
