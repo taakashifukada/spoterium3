@@ -26,12 +26,12 @@ Route::get('/', function () {
 });
 */
 Route::get('/welcome',[BookmarkController::class, 'welcome']);
-/*Route::get('/',function(){
+Route::get('/',function(){
     $message = view();
     dd($message);
     return 'OK';
 });
-*/
+
 
 Route::group(['middleware' => ['auth']], function(){
     //URL追加
@@ -39,7 +39,7 @@ Route::group(['middleware' => ['auth']], function(){
         return view('dashboard');
     })->middleware(['auth'])->name('dashboard');
     
-    Route::get('/',[BookmarkController::class, 'topPage']);
+    //Route::get('/',[BookmarkController::class, 'topPage']);
     Route::post('/',[BookmarkController::class, 'saveFavsTop']);
     Route::get('/search',[BookmarkController::class, 'search']);
     Route::get('/history',[BookmarkController::class, 'historyPage']);
