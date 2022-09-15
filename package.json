@@ -2,11 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
-        
-        
-        "production": "mix -- production",
-        "heroku-postbuild": "npm run production"
+        "build": "vite build"
     },
     "devDependencies": {
         "@tailwindcss/forms": "^0.5.2",
