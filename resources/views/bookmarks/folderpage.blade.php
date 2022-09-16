@@ -16,17 +16,25 @@
         <!-- script -->
     </head>
     <body>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <x-dropdown-link :href="route('logout')"
-                    onclick="event.preventDefault();
-                                this.closest('form').submit();">
-                ログアウト
-            </x-dropdown-link>
-        </form>
-        <a href='/'>toppage</a>
+        <div class=header>
+            <a class=header_top href="/">Top</a>
+            <a class=header_history href="/history">履歴</a>
+            <div class=header_folder>Folders</div>
+            <a class=header_search href='/search'>検索</a>
+            <div class=header_logout>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        ログアウト
+                    </x-dropdown-link>
+                </form>
+            </div>
+            <a href="/add/url">NEW</a>
+        </div>
         <main>
-            <a href="/add/url">Bookmarkを追加</a>
+            
             @foreach($bookmarks as $bookmark)
                 <div class="bookmark_idx">
                     <p class="updated_idx">"{{ $bookmark->updated_at}}"</p>

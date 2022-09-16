@@ -26,6 +26,13 @@ Route::get('/', function () {
 });
 */
 Route::get('/welcome',[BookmarkController::class, 'welcome']);
+/*Route::get('/',function(){
+    $message = view();
+    dd($message);
+    return 'OK';
+});
+*/
+
 
 Route::group(['middleware' => ['auth']], function(){
     //URL追加

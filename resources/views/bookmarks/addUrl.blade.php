@@ -6,17 +6,27 @@
         <title>Spoterium</title>
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet">
+        <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     </head>
     <body>
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-        
-            <x-dropdown-link :href="route('logout')"
-                    onclick="event.preventDefault();
-                                this.closest('form').submit();">
-                {{ __('Log out') }}
-            </x-dropdown-link>
-        </form>
+        <div class=header>
+            <a class=header_top href="/">Top</a>
+            <a class=header_history href="/history">履歴</a>
+            <div class=header_folder>Folders</div>
+            <a class=header_search href='/search'>検索</a>
+            <div class=header_logout>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-dropdown-link :href="route('logout')"
+                            onclick="event.preventDefault();
+                                        this.closest('form').submit();">
+                        ログアウト
+                    </x-dropdown-link>
+                </form>
+            </div>
+            <a href="/add/url">NEW</a>
+        </div>
         <div id='url_form'>
             <form action="/add/url" method="POST">
                 @csrf
