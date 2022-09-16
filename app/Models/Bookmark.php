@@ -46,7 +46,7 @@ class Bookmark extends Model
         return $this->belongsToMany('App\Models\Tag');
     }
     
-    function getPaginateByLimit(int $limit_count = 5)
+    function getPaginateByLimit(int $limit_count = 50)
     {
         return $this::with(['category', 'tags', 'contents',"folder"])->orderBy('updated_at', 'DESC')->paginate($limit_count);
     }

@@ -52,5 +52,7 @@
                 </x-button>
             </div>
         </form>
+        <br>
+        <a href='/register' id='login_link_to_register' style="float: right">register</a>
     </x-auth-card>
 </x-guest-layout>
