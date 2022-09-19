@@ -67,7 +67,7 @@
                             </div>
                         
                             <div class="textzone_idx">
-                                <a :href="bookmark.url" class="title_idx" v-text="bookmark.title"></a>
+                                <a :href="bookmark.url" class="title_idx" target="_blank" rel="noopener noreferrer" v-text="bookmark.title"></a>
                                 <p class="comment_idx">@{{ bookmark.comment }}</p>
                                 <div class='folder_idx'>
                                     フォルダ:<a :href="'/folders?folder_id=' + bookmark.folder_id">@{{ bookmark.folder.name }}</a>
