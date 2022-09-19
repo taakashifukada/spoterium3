@@ -19,7 +19,19 @@ class BookmarkController extends Controller
     //
     public function welcome()
     {
-        
+        //タイトルを取得したいURL
+        $url = 'https://www.youtube.com/';
+         
+        //ソースの取得
+        $source = @file_get_contents($url);
+        //文字コードをUTF-8に変換し、正規表現でタイトルを抽出
+        if (preg_match('/<title>(.*?)<\/title>/i', mb_convert_encoding($source, 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS'), $result)) {
+            $title = $result[1];
+        } else {
+            //TITLEタグが存在しない場合
+            $title = null;
+        }
+        echo $title;
         return view('welcome');
     }
     
@@ -103,7 +115,21 @@ class BookmarkController extends Controller
         $input=$request['bookmark'];
         //storage/framework/sessions/ディレクトリ内のファイルにセッションを保存
         //sessionのkey'url'の値を更新
-        session()->put(['url' => $input['url']]);
+         
+        //ソースの取得
+        $source = @file_get_contents($input['url']);
+        //文字コードをUTF-8に変換し、正規表現でタイトルを抽出
+        if (preg_match('/<title>(.*?)<\/title>/i', mb_convert_encoding($source, 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS'), $result)) {
+            $title = $result[1];
+        } else {
+            //TITLEタグが存在しない場合
+            $title = '';
+        }
+        echo $title;
+        
+        //storage/framework/sessions/ディレクトリ内のファイルにセッションを保存
+        //sessionのkey'url'の値を更新
+        session()->put(['url' => $input['url'], 'title' => $title]);
         
         return redirect('/add/details');
     }
@@ -121,7 +147,8 @@ class BookmarkController extends Controller
     public function addDetails(Bookmark $bookmark)
     {
         $url = session()->get('url');
-        return view('bookmarks.addDetails')->with(['url' => $url]);
+        $title = session()->get('title');
+        return view('bookmarks.addDetails')->with(['url' => $url, 'title' => $title]);
     }
     
     public function storeBookmark(Request $request, Bookmark $bookmark)
