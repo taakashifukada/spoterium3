@@ -245,7 +245,7 @@ img.thumbnail_idx {
 /* add_detail */
 
 img#preview{
-    width: 240px;
+    width: 135px;
     height: 135px;
     object-fit: cover;
 }

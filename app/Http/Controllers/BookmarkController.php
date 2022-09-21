@@ -119,7 +119,7 @@ class BookmarkController extends Controller
         //ソースの取得
         $source = @file_get_contents($input['url']);
         //文字コードをUTF-8に変換し、正規表現でタイトルを抽出
-        if (preg_match('/<title>(.*?)<\/title>/i', mb_convert_encoding($source, 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS'), $result)) {
+        if (preg_match('/<title>(.*?)<\/title>/i', $source, $result)) {
             $title = $result[1];
         } else {
             //TITLEタグが存在しない場合
