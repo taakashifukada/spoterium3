@@ -183,9 +183,13 @@ class BookmarkController extends Controller
         //画像をs3バケットに保存&パスを取得
         //s3のthumbnailsフォルダに保存
         //dd($request['img']);
-        $path = Storage::disk('s3')->putFile('thumbnails', $request->file('img'),'public');
-        $full_path = Storage::disk('s3')->url($path);
-        $input['img_path']=$full_path;
+        if ($request['img']==null){
+            $input['img_path']='https://spoterium-imgs.s3.amazonaws.com/prepared/noimage.jpg';
+        }else{
+            $path = Storage::disk('s3')->putFile('thumbnails', $request->file('img'),'public');
+            $full_path = Storage::disk('s3')->url($path);
+            $input['img_path']=$full_path;
+        }
         
         //目次の有無
         if($request->has('contents_url')){

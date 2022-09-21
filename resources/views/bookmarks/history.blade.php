@@ -56,15 +56,17 @@
                         </div>
                     </div>
                 </div>
-                <div class="mokuji_idx">
-                    <a data-toggle="collapse" href="#collapse{{$bookmark->id}}">▼目次</a>
-                    <div id="collapse{{$bookmark->id}}" class="panel-collapse collapse">
-                        @foreach($bookmark->contents as $content)
-                            <p>{{ $content->contents_index }}</p>
-                            <a href="{{ $content->contents_url }}" target="_blank" rel="noopener noreferrer">{{ $content->contents_title }}</a>
-                        @endforeach
+                @if (count($bookmark->contents) != 0)
+                    <div class="mokuji_idx">
+                        <a data-toggle="collapse" href="#collapse{{$bookmark->id}}">▼目次</a>
+                        <div id="collapse{{$bookmark->id}}" class="panel-collapse collapse">
+                            @foreach($bookmark->contents as $content)
+                                <p>{{ $content->contents_index }}</p>
+                                <a href="{{ $content->contents_url }}" target="_blank" rel="noopener noreferrer">{{ $content->contents_title }}</a>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
+                @endif
                 <hr>
             @endforeach
             
