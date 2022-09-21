@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']], function(){
         return view('dashboard');
     })->middleware(['auth'])->name('dashboard');
     
+    Route::post('/delete/{bookmark}',[BookmarkController::class,'delete']);
     Route::get('/',[BookmarkController::class, 'topPage']);
     Route::post('/',[BookmarkController::class, 'saveFavsTop']);
     Route::get('/search',[BookmarkController::class, 'search']);
