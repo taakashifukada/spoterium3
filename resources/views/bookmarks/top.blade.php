@@ -45,7 +45,7 @@
                     <div v-for='(item,index) in items' v-if='index < 6' :key="item.id">
                         <div class=bookmark_top>
                             <div class='deletefav' @click='doDelete(index)'>x</div>
-                            <a :href="item.url">
+                            <a :href="item.url" target="_blank" rel="noopener noreferrer">
                                 <img :src="item.img_path" class=icon_top>
                             </a>
                             <div class=title_top>@{{ item.title }}</div>
@@ -62,7 +62,7 @@
                 <span id=favs_list_top @mouseover='open' @mouseleave='close'>
                     <a href="/folders?folder_id=2" id='link_more_top'>All</a>
                     <ul class=favs_dropdown v-if="isOpen" v-for='fav in favs'>
-                        <li><a :href='fav.url' v-text='fav.title'></a></li>
+                        <li><a :href='fav.url' target="_blank" rel="noopener noreferrer" v-text='fav.title'></a></li>
                     </ul>
                 </span> 
             </div>
@@ -70,7 +70,7 @@
                 <p>更新履歴</p>
                 @foreach ($bookmarks_new as $bookmark)
                     <div class=news_top>
-                        <a href="{{ $bookmark->url }}" class=news_title_top>・{{ $bookmark->title }}</a>
+                        <a href="{{ $bookmark->url }}" class=news_title_top target="_blank" rel="noopener noreferrer">・{{ $bookmark->title }}</a>
                         <div class=news_time_top>{{ $bookmark->updated_at }}</div>
                     </div>
                 @endforeach

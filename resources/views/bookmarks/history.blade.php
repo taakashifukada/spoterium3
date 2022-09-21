@@ -41,7 +41,7 @@
                         <img src="{{ $bookmark->img_path }}" class="thumbnail_idx">
                     </div>
                     <div class="textzone_idx">
-                        <a href="{{ $bookmark->url }}" class="title_idx">{{ $bookmark->title }}</a>
+                        <a href="{{ $bookmark->url }}" class="title_idx" target="_blank" rel="noopener noreferrer">{{ $bookmark->title }}</a>
                         <p class="comment_idx">{{ $bookmark->comment }}</p>
                         <div class='folder_idx'>
                             フォルダ:<a href='/folders?folder_id={{ $bookmark->folder->id}}'>{{ $bookmark->folder->name }}</a>
@@ -61,7 +61,7 @@
                     <div id="collapse{{$bookmark->id}}" class="panel-collapse collapse">
                         @foreach($bookmark->contents as $content)
                             <p>{{ $content->contents_index }}</p>
-                            <a href="{{ $content->contents_url }}">{{ $content->contents_title }}</a>
+                            <a href="{{ $content->contents_url }}" target="_blank" rel="noopener noreferrer">{{ $content->contents_title }}</a>
                         @endforeach
                     </div>
                 </div>
