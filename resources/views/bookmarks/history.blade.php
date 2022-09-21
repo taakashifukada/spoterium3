@@ -14,6 +14,7 @@
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
         
         <!-- script -->
+        <script src="{{ asset('js/confirmDel.js') }}"></script>
     </head>
     <body>
         <div class=header>
@@ -37,9 +38,9 @@
             @foreach($bookmarks as $bookmark)
                 <div class="bookmark_idx">
                     <p class="updated_idx">"{{ $bookmark->updated_at}}"</p>
-                    <form class="delete_idx" action='/delete/{{ $bookmark->id }}' method="POST">
+                    <form class="delete_idx" action='/delete/{{ $bookmark->id }}' method="POST" onSubmit="return confirmDel()">
                         @csrf
-                        <button class='del_button_idx' type="submit" onclick="confirmDel()">削除</button>
+                        <button class='del_button_idx' type="submit" >削除</button>
                     </form>
                     <div class="imgzone_idx">
                         <img src="{{ $bookmark->img_path }}" class="thumbnail_idx">
@@ -75,11 +76,6 @@
             @endforeach
             {{ $bookmarks->links() }}
         </main>
-        <script>
-            function confirmDel(){
-                confirm("ブックマークを削除しますか？");
-            }
-        </script>
         <!-- bootstrap js -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
     </body>
