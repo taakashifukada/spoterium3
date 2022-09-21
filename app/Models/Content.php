@@ -18,6 +18,6 @@ class Content extends Model
     
     public function bookmark()   
     {
-        return $this->belongsTo('App\Bookmark');  
+        return $this->belongsTo('App\Models\Bookmark');  
     }
 }

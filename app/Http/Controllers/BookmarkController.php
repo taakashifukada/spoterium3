@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Pagination\Paginator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Bookmark;
@@ -33,6 +33,30 @@ class BookmarkController extends Controller
         }
         echo $title;
         return view('welcome');
+    }
+    
+    public function delete(Bookmark $bookmark) {
+        $tags=Tag::with(['bookmarks'])->whereHas('bookmarks', function($query) use ($bookmark) {
+            $query->where('id',$bookmark->id);
+        })->get();
+        $contents=Content::with(['bookmark'])->where('bookmark_id',$bookmark->id)->delete();
+        $user=User::where('id',$bookmark->user_id)->first();
+        $favs_id=preg_split("/[\s,]/",$user->favs_id);
+        $new_favs=$favs_id;
+        
+        for ($i=0;$i<count($new_favs);$i++){
+            if($new_favs[$i]==$bookmark->id){
+                $new_favs[$i]="0";
+            }
+        }
+        $result = array_diff($new_favs, ["0"]);
+        $favs_id = implode(",",$result);
+        User::where('id',$bookmark->user_id)->update([
+                "favs_id" => $favs_id
+            ]);
+        $bookmark->tags()->detach();
+        $bookmark->delete();
+        return back();
     }
     
     public function search()
@@ -75,8 +99,10 @@ class BookmarkController extends Controller
     
     public function historyPage(Bookmark $bookmark)
     {
+        $bookmarks=Bookmark::with(['category', 'tags', 'contents',"folder"])->where('user_id',Auth::user()->id)
+        ->orderBy('updated_at', 'DESC')->paginate(50);
         //dd($bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)->first());
-        return view('bookmarks.history')->with(['bookmarks'=>$bookmark->getPaginateByLimit()->where('user_id',Auth::user()->id)]);
+        return view('bookmarks.history')->with(['bookmarks'=>$bookmarks]);
     }
     
     public function showTagpage(Request $request, Bookmark $bookmark)
