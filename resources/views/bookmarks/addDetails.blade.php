@@ -36,17 +36,17 @@
             <form action="/add/details" method="POST" enctype="multipart/form-data">
                 @csrf
                 <p class='title'>ブックマークのタイトル</p>
-                <input type="text" name="bookmark[title]" maxlength=200 placeholder="Title" value="{{ $title }}" required />
-                <p class='title'>フォルダ</p>
-                <input type="text" name="bookmark[folder_name]" maxlength=200 placeholder="Folder"/>
+                <input type="text" class="details_input" name="bookmark[title]" maxlength=200 placeholder="Title" value="{{ $title }}" required />
+                <p class='title'>フォルダ: favsを指定するとトップページに表示されます。</p>
+                <input type="text" class="details_input" name="bookmark[folder_name]" maxlength=200 placeholder="Folder"/>
                 <p class='title'>タグ</p>
-                <input type="text" name="bookmark[tag_names]" maxlength=500 placeholder="スペース区切りでタグを入力"/>
+                <input type="text" class="details_input" name="bookmark[tag_names]" maxlength=500 placeholder="スペース区切りでタグを入力"/>
                 <p class='title'>サムネイル</p>
                 <input type="file" name="img" accept="image/jpg", "image/png" onchange="previewFile(this);">
                 <p>プレビュー</p>
                 <img id="preview">
                 <p class='title'>コメント</p>
-                <input type="text" name="bookmark[comment]" maxlength=1000 placeholder="Comment"/>
+                <textarea id='add_comment' cols=100 rows=5 name="bookmark[comment]" maxlength=1000 placeholder="Comment"></textarea>
                 <input type='submit' value="作成"/>
                 
                 <div id="mokuji">
