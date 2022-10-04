@@ -55,6 +55,8 @@ Route::group(['middleware' => ['auth']], function(){
     Route::get('/tags', [BookmarkController::class, 'showTagpage']);
     Route::get('/folders',[BookmarkController::class,'showFolderpage']);
     Route::get('/categories',[BookmarkController::class,'showCategorypage']);
+    Route::get('/edit/{bookmark}',[BookmarkController::class,'goEdit']);
+    Route::post('/edit/{bookmark}',[BookmarkController::class,'storeEdit']);
 });
 
 require __DIR__.'/auth.php';
