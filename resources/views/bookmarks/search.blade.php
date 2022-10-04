@@ -64,10 +64,16 @@
                     <div v-for="(bookmark, index) in filteredBookmarks" v-if='index < 200' :key="bookmark.id">
                         <div class="bookmark_idx">
                             <p class="updated_idx">@{{bookmark.updated_at}}</p>
-                            <form class="delete_idx" :action="'/delete/' + bookmark.id" method="POST" onSubmit="return confirmDel()">
-                                @csrf
-                                <button class='del_button_idx' type="submit" >削除</button>
-                            </form>
+                            <div class="del_n_edit">
+                                <form class="delete_idx" :action="'/delete/' + bookmark.id" method="POST" onSubmit="return confirmDel()">
+                                    @csrf
+                                    <button class='del_button_idx' type="submit" >削除</button>
+                                </form>
+                                <form class="edit_idx" :action="'/edit/' + bookmark.id" method="GET">
+                                    @csrf
+                                    <button class='edit_button_idx' type="submit" >編集</button>
+                                </form>
+                            </div>
                             <div class="imgzone_idx">
                                 <img :src="bookmark.img_path" class="thumbnail_idx">
                             </div>
