@@ -31,41 +31,45 @@
             <a href="/add/url">NEW</a>
         </div>
         <p>ブックマークの詳細</p>
-        <p>URL:{{ $url }}</p>
-        <div id='details_form'>
-            <form action="/add/details" method="POST" enctype="multipart/form-data">
-                @csrf
-                <p class='title'>ブックマークのタイトル</p>
-                <input type="text" class="details_input" name="bookmark[title]" maxlength=200 placeholder="Title" value="{{ $title }}" required />
-                <p class='title'>フォルダ: favsを指定するとトップページに表示されます。</p>
-                <input type="text" class="details_input" name="bookmark[folder_name]" maxlength=200 placeholder="Folder"/>
-                <p class='title'>タグ</p>
-                <input type="text" class="details_input" name="bookmark[tag_names]" maxlength=500 placeholder="スペース区切りでタグを入力"/>
-                <p class='title'>サムネイル</p>
-                <input type="file" name="img" accept="image/jpg", "image/png" onchange="previewFile(this);">
-                <p>プレビュー</p>
-                <img id="preview">
-                <p class='title'>コメント</p>
-                <textarea id='add_comment' cols=100 rows=5 name="bookmark[comment]" maxlength=1000 placeholder="Comment"></textarea>
-                <input type='submit' value="作成"/>
-                
-                <div id="mokuji">
-                    <p class='title'>目次</p>
-                    <div v-for="(text,index) in contents_url">
-                        <!--入力ボックス-->
-                        <input type="text" placeholder="URL" v-model="contents_url[index]" name="contents_url[]" required/>
-                        <input type="text" placeholder="Title" v-model="contents_title[index]" name="contents_title[]" required/>
-                        <!--削除ボタン-->
-                        <button type="button" @click="removeInput(index)">削除</button>
-                    </div>
-                    
-                    <!-- 入力ボックスを追加するボタン ② -->
-                    <button type="button" @click="addInput">追加する</button>
+        <form action="/edit/{{$bookmark->id}}" id='details_form' method="POST" enctype="multipart/form-data">
+            @csrf
+            <p class='title'>URL</p>
+            <input type="text" class="details_input" name="bookmark[url]" value="{{$bookmark->url}}" >
+            <p class='title'>ブックマークのタイトル</p>
+            <input type="text" class="details_input" name="bookmark[title]" maxlength=200 placeholder="Title" value="{{$bookmark->title}}" required />
+            <p class='title'>フォルダ: favsを指定するとトップページに表示されます。</p>
+            <input type="text" class="details_input" name="bookmark[folder_name]" value="{{$bookmark->folder->name}}" maxlength=200 placeholder="Folder"/>
+            <p class='title'>タグ</p>
+            <input type="text" class="details_input" name="bookmark[tag_names]" maxlength=500 value="{{$tags}}" placeholder="スペース区切りでタグを入力"/>
+            <p class='title'>サムネイル</p>
+            <input type="file" id='thumbnail_add' name="img" accept="image/jpg", "image/png" onchange="previewFile(this);">
+            <p>プレビュー</p>
+            <img id="preview">
+            <p class='title'>コメント</p>
+            <textarea id='add_comment' cols=100 rows=5 name="bookmark[comment]" value="{{$bookmark->comment}}" maxlength=1000 placeholder="Comment"></textarea>
+            <input type='submit' value="更新"/>
+            
+            <div id="mokuji">
+                <p class='title'>目次</p>
+                <div v-for="(text,index) in contents_url">
+                    <!--入力ボックス-->
+                    <input type="text" placeholder="URL" v-model="contents_url[index]" name="contents_url[]" required/>
+                    <input type="text" placeholder="Title" v-model="contents_title[index]" name="contents_title[]" required/>
+                    <!--削除ボタン-->
+                    <button type="button" @click="removeInput(index)">削除</button>
                 </div>
-            </form>
-        </div>
+                
+                <!-- 入力ボックスを追加するボタン ② -->
+                <button type="button" @click="addInput">追加する</button>
+            </div>
+        </form>
         
         <script>
+            window.onload= function(){
+                    document.getElementById('preview').src="{{ $bookmark->img_path }}";
+                    document.getElementById('details_form').action="/edit/{{$bookmark->id}}?img_change=0";
+                }
+            
             function previewFile(e){
                 //console.log(e.files[0]);
                 //fileAPI,fileReaderインスタンス
@@ -78,7 +82,8 @@
                     //プレビュー表示している
                     //resultプロパティ:読み取り成功後、読み取ったデータ(今回はローカルURL)を取得する
                     document.getElementById('preview').src = file_data.result;
-                    console.log(file_data.result);
+                    document.getElementById('details_form').action="/edit/{{$bookmark->id}}?img_change=1";
+                    //console.log(file_data.result);
                 });
                 //pc上の画像ファイルの場所をローカルURLとして読み込む
                 file_data.readAsDataURL(e.files[0]);

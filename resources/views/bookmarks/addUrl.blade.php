@@ -31,7 +31,7 @@
             <form action="/add/url" method="POST">
                 @csrf
                 <p class='title'>URLを入力してブックマークを作成</p>
-                <input type="text" name="bookmark[url]" placeholder="URL"/>
+                <input type="text" name="bookmark[url]" placeholder="URL" required/>
                 <input type='submit' value="次へ"/>
             </form>
         </div>

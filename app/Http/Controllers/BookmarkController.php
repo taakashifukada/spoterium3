@@ -35,11 +35,100 @@ class BookmarkController extends Controller
         return view('welcome');
     }
     
+    public function goEdit(Bookmark $bookmark) {
+        $tags='';
+        //dd($bookmark->tags[0]->name);
+        for ($i=0;$i<count($bookmark->tags);$i++){
+            if($i==count($bookmark->tags)-1){
+                $tags= $tags . $bookmark->tags[$i]->name;
+            }else{
+                $tags=$tags . $bookmark->tags[$i]->name . ' ';
+            }
+        }
+        return view('bookmarks.editpage')->with(['bookmark'=>$bookmark, 'tags'=>$tags]);
+    }
+    
+    public function storeEdit(Request $request, Bookmark $bookmark)
+    {
+        $input = $request['bookmark'];
+        //dd($input);
+        
+        //folderの管理
+        if(isset($input["folder_name"])){
+            $folder_name=$input['folder_name'];
+            if(\DB::table('folders')->where('name', $folder_name)->exists() != True){
+                $folder = New Folder();
+                $folder->name=$folder_name;
+                $folder->save();
+            };
+            //\App\Category = DB::table(categories)
+            $input['folder_id']=\App\Models\Folder::where('name',$input['folder_name'])->first()->id;
+        }else{
+            $input['folder_id']=1;
+        }
+        
+        //Tagの整理
+        $tag=mb_convert_kana($input['tag_names'],'s','utf-8');
+        $tags=preg_split('/[\s]+/', $tag, -1, PREG_SPLIT_NO_EMPTY);
+        $tag_ids=[];
+        foreach($tags as $tag_name){
+            if(\DB::table('tags')->where('name', $tag_name)->exists() != True){
+                $tag = New Tag();
+                $tag->name=$tag_name;
+                $tag->save();
+            };
+            $tag_ids[]=\App\Models\Tag::where('name',$tag_name)->first()->id;
+        };
+        
+        $img_change=$request->img_change;
+        //画像をs3バケットに保存&パスを取得
+        //s3のthumbnailsフォルダに保存
+        //dd($request['img']);
+        if ($img_change==1){
+            if($bookmark->img_path != 'https://spoterium-imgs.s3.amazonaws.com/prepared/noimage.jpg'){
+                $path=substr($bookmark->img_path,40);
+                Storage::disk('s3')->delete($path);
+            }
+            $path = Storage::disk('s3')->putFile('thumbnails', $request->file('img'),'public');
+            $full_path = Storage::disk('s3')->url($path);
+            $input['img_path']=$full_path;
+        }
+        
+        //目次の有無
+        if($request->has('contents_url')){
+            $input['contents_flag']=1;
+        }
+        
+        $input['user_id']=Auth::user()->id;
+        //dd($tag_ids);
+        $bookmark->fill($input)->save();
+        
+        //目次の処理
+        $contents_old=Content::with(['bookmark'])->where('bookmark_id',$bookmark->id)->delete();
+        if($request->has('contents_url')){
+            $contents_url=$request['contents_url'];
+            $contents_title=$request['contents_title'];
+            for($i=0; $i<count($contents_url); $i++){
+                $content=New Content();
+                $content->contents_url=$contents_url[$i];
+                $content->contents_title=$contents_title[$i];
+                $content->contents_index=$i+1;
+                $content->bookmark_id=$bookmark->id;
+                $content->save();
+            }
+        }
+        
+        $bookmark->tags()->detach();
+        $bookmark->tags()->attach($tag_ids);
+        return redirect('/history');
+    }
+    
     public function delete(Bookmark $bookmark) {
         $tags=Tag::with(['bookmarks'])->whereHas('bookmarks', function($query) use ($bookmark) {
             $query->where('id',$bookmark->id);
         })->get();
         $contents=Content::with(['bookmark'])->where('bookmark_id',$bookmark->id)->delete();
+        
         $user=User::where('id',$bookmark->user_id)->first();
         $favs_id=preg_split("/[\s,]/",$user->favs_id);
         $new_favs=$favs_id;
@@ -54,6 +143,7 @@ class BookmarkController extends Controller
         User::where('id',$bookmark->user_id)->update([
                 "favs_id" => $favs_id
             ]);
+        
         $bookmark->tags()->detach();
         $bookmark->delete();
         return back();
