@@ -46,7 +46,7 @@
             <p>プレビュー</p>
             <img id="preview">
             <p class='title'>コメント</p>
-            <textarea id='add_comment' cols=100 rows=5 name="bookmark[comment]" value="{{$bookmark->comment}}" maxlength=1000 placeholder="Comment"></textarea>
+            <textarea id='add_comment' cols=100 rows=5 name="bookmark[comment]" maxlength=1000 placeholder="Comment">{{$bookmark->comment}}</textarea>
             <input type='submit' value="更新"/>
             
             <div id="mokuji">
