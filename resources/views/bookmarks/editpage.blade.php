@@ -100,6 +100,14 @@
                 data: {
                     contents_url: [], // 複数入力のデータ（配列）
                     contents_title: [],
+                    old_mokuji: @json($bookmark->contents)
+                },
+                beforeMount(){
+                    for(let i in this.old_mokuji){
+                        this.contents_url.push(this.old_mokuji[i].contents_url); // 配列に１つ空データを追加する
+                        this.contents_title.push(this.old_mokuji[i].contents_title);
+                        
+                    }
                 },
                 methods: {
         
