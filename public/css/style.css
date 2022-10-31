@@ -44,7 +44,7 @@ span {
    transform: translateY(-50%) translateX(-50%);    /* 要素自体の半分、上と左にずらす */
    padding: 20px;               /* 余白指定 */
    white-space: pre-wrap;
-   font-size: 16px;
+   font-size: 1４px;
    height: 90vh;
    width: 50vw;
    overflow-y: scroll;
