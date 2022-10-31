@@ -19,20 +19,8 @@ class BookmarkController extends Controller
     //
     public function welcome()
     {
-        //タイトルを取得したいURL
-        $url = 'https://www.youtube.com/';
-         
-        //ソースの取得
-        $source = @file_get_contents($url);
-        //文字コードをUTF-8に変換し、正規表現でタイトルを抽出
-        if (preg_match('/<title>(.*?)<\/title>/i', mb_convert_encoding($source, 'UTF-8', 'ASCII,JIS,UTF-8,EUC-JP,SJIS'), $result)) {
-            $title = $result[1];
-        } else {
-            //TITLEタグが存在しない場合
-            $title = null;
-        }
-        echo $title;
-        return view('welcome');
+        $bookmarks=\DB::table('bookmarks')->where('user_id',Auth::user()->id)->orderBy('title')->get();
+        return view('welcome')->with(['bookmarks'->$bookmark]);
     }
     
     public function goEdit(Bookmark $bookmark) {
@@ -302,6 +290,17 @@ class BookmarkController extends Controller
         if ($request['img']==null){
             $input['img_path']='https://spoterium-imgs.s3.amazonaws.com/prepared/noimage.jpg';
         }else{
+            //リサイズ
+            list($width, $hight) = getimagesize($request->file('img')); // 元の画像名を指定してサイズを取得
+            $baseImage = imagecreatefromjpeg($request->file('img')); // 元の画像から新しい画像を作る準備
+            $image = imagecreatetruecolor(96, 96); // サイズを指定して新しい画像のキャンバスを作成
+            // 画像のコピーと伸縮
+            imagecopyresampled($image, $baseImage, 0, 0, 0, 0, 96, 96, $width, $hight);
+            // コピーした画像を出力する
+            imagejpeg($image , 'new.jpg');
+            dd(file($image));
+            
+            
             $path = Storage::disk('s3')->putFile('thumbnails', $request->file('img'),'public');
             $full_path = Storage::disk('s3')->url($path);
             $input['img_path']=$full_path;

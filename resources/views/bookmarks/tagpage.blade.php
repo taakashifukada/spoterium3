@@ -51,7 +51,7 @@
                         <img src="{{ $bookmark->img_path }}" class="thumbnail_idx">
                     </div>
                     <div class="textzone_idx">
-                        <a href="{{ $bookmark->url }}" class="title_idx">{{ $bookmark->title }}</a>
+                        <a href="{{ $bookmark->url }}" target="_blank" rel="noopener noreferrer" class="title_idx">{{ $bookmark->title }}</a>
                         <p class="comment_idx">{{ $bookmark->comment }}</p>
                         <div class='folder_idx'>
                             フォルダ:<a href='/folders?folder_id={{ $bookmark->folder->id}}'>{{ $bookmark->folder->name }}</a>
