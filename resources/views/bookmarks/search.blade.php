@@ -13,10 +13,13 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
         
         <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+        <script type="text/javascript" src="https://unpkg.com/vue-simple-suggest"></script>
         
         <script src="{{ asset('js/confirmDel.js') }}"></script>
     </head>
     <body>
+        
         <div class=header>
             <a class=header_top href="/">Top</a>
             <a class=header_history href="/history">履歴</a>
@@ -120,18 +123,6 @@
         
         
         <script>
-            let a="1 2 3 4 ";
-            var separatorString = /\s+/;
-            var arrayStrig = a.split(separatorString);
-            console.log(arrayStrig);
-        </script>
-        
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
-        <script type="text/javascript" src="https://unpkg.com/vue-simple-suggest"></script>
-        
-        
-        <script>
-            console.log(@json($bookmarks));
             const tags_data = @json($tag_names);
             const data2 = @json($folder_names);
             const data3 = @json($bookmark_titles);
