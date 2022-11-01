@@ -55,9 +55,10 @@
                     </ul>
                 </div>
             </div>
-            
-            <div class='fullTextWrap' v-if='fullText' @click.self='backgroundClick'>
-                <p class='text_viewer'>@{{ currentText }}</p>
+            <div v-if='fullText'>
+                <div class='fullTextWrap' v-if='fullText' @click.self='backgroundClick'>
+                    <p class='text_viewer'>@{{ currentText }}</p>
+                </div>
             </div>
             
             <div id='search_tab'>
