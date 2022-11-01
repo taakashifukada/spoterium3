@@ -54,6 +54,9 @@
                     </ul>
                 </div>
             </div>
+            <div class='fullTextWrap' v-if='fullText' @click.self='backgroundClick'>
+                <p class='text_viewer'>@{{ currentText }}</p>
+            </div>
             
             <div id='search_tab'>
                 <ul class="tab_list">
@@ -82,7 +85,7 @@
                         
                             <div class="textzone_idx">
                                 <a :href="bookmark.url" class="title_idx" target="_blank" rel="noopener noreferrer" v-text="bookmark.title"></a>
-                                <p class="comment_idx">@{{ bookmark.comment }}</p>
+                                <p class="comment_idx" @click='contentClick(index)' @mouseover="commentMouseover(index)" @mouseout="activeComment=-1" :class="{overed:activeComment===index} ">@{{ bookmark.comment }}</p>
                                 <div class='folder_idx'>
                                     フォルダ:<a :href="'/folders?folder_id=' + bookmark.folder_id">@{{ bookmark.folder.name }}</a>
                                 </div>
@@ -171,7 +174,24 @@
                         this.isActive = num;
                     },
                     
+                    contentClick: function(index) {
+                        let bookmark=this.filteredBookmarks[index];
+                        console.log(bookmark.comment);
+                        if (bookmark.comment.length>0){
+                            this.fullText=true;
+                            this.currentTextIndex=index;
+                        }
+                    },
                     
+                    backgroundClick: function(index) {
+                        this.fullText=false;
+                    },
+                    commentMouseover: function(index) {
+                        let bookmark=this.filteredBookmarks[index];
+                        if (bookmark.comment.length>0){
+                            this.activeComment=index;
+                        }
+                    }
                 },
                 computed: {
                     filteredBookmarks: function() {
@@ -253,6 +273,11 @@
                         return keywordLast;
                     },
                     
+                    currentText() {
+                        let bookmark = this.filteredBookmarks[this.currentTextIndex];
+                        console.log(bookmark.comment);
+                        return bookmark.comment;
+                    }
                 }
             });
         </script>
