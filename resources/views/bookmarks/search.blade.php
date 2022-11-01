@@ -166,6 +166,9 @@
                     currentTextIndex: 1,
                     activeComment: -1
                 },
+                beforeMount: function() {
+                    this.fullText = false;
+                },
                 methods: {
                     bindKeyword({ target }) {
                         this.keyword =  target.value;
