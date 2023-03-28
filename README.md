@@ -40,7 +40,7 @@ Topページです。「favs」フォルダに登録したブックマークに�
 Laravel9(PHP)
 
 ### フロントエンド
-CSS,HTML,Vue.js(JavaScript)
+Vue.js(JavaScript)
 
 ### 開発環境
 AWS(cloud9)
